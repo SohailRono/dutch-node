@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { Hidden, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   navbar: {
@@ -63,15 +63,23 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
+      flexGrow: 1,
     },
   },
   searchForm: {
     border: '1px solid #ffffff',
     backgroundColor: '#ffffff',
     borderRadius: 5,
+    margin: 'auto',
+    display: 'flex',
+    width: '60%',
   },
   searchInput: {
+    alignItems: 'center',
+    display: 'flex',
+    flexGrow: 1,
     paddingLeft: 5,
+    paddingRight: 5,
     color: '#000000',
     '& ::placeholder': {
       color: '#606060',

@@ -2,7 +2,7 @@ import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
-import React, { useEffect, useContext, useReducer } from 'react';
+import React, { useEffect, useContext, useReducer, useState } from 'react';
 import {
   CircularProgress,
   Grid,
@@ -12,18 +12,19 @@ import {
   Card,
   Button,
   ListItemText,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  CardActions,
+  InputBase,
+  IconButton,
 } from '@material-ui/core';
 import { getError } from '../../utils/error';
 import { Store } from '../../utils/Store';
 import Layout from '../../components/Layout';
 import useStyles from '../../utils/styles';
 import { useSnackbar } from 'notistack';
+import SearchIcon from '@material-ui/icons/Search';
 
 function reducer(state, action) {
   switch (action.type) {
@@ -53,6 +54,14 @@ function reducer(state, action) {
 }
 
 function AdminProdcuts() {
+  const [query, setQuery] = useState('');
+  const queryChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
+  const submitHandler = (e) => {
+    e.preventDefault();
+    router.push(`/search?query=${query}`);
+  };
   const { state } = useContext(Store);
   const router = useRouter();
   const classes = useStyles();
@@ -127,10 +136,11 @@ function AdminProdcuts() {
       enqueueSnackbar(getError(err), { variant: 'error' });
     }
   };
+
   return (
     <Layout title="Products">
       <Grid container spacing={1}>
-        <Grid item md={3} xs={12}>
+        <Grid item md={2} xs={12}>
           <Card className={classes.section}>
             <List>
               <NextLink href="/admin/dashboard" passHref>
@@ -156,18 +166,41 @@ function AdminProdcuts() {
             </List>
           </Card>
         </Grid>
-        <Grid item md={9} xs={12}>
+        <Grid item md={10} xs={12}>
           <Card className={classes.section}>
             <List>
               <ListItem>
                 <Grid container alignItems="center">
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <Typography component="h1" variant="h1">
                       Products
                     </Typography>
                     {loadingDelete && <CircularProgress />}
                   </Grid>
-                  <Grid align="right" item xs={6}>
+                  <Grid item xs={4}>
+                    <div>
+                      <form
+                        onSubmit={submitHandler}
+                        className={classes.searchForm}
+                      >
+                        <InputBase
+                          name="query"
+                          className={classes.searchInput}
+                          placeholder="Search products"
+                          onChange={queryChangeHandler}
+                        />
+                        <IconButton
+                          type="submit"
+                          className={classes.iconButton}
+                          aria-label="search"
+                        >
+                          <SearchIcon />
+                        </IconButton>
+                      </form>
+                    </div>
+                    {loadingDelete && <CircularProgress />}
+                  </Grid>
+                  <Grid align="right" item xs={4}>
                     <Button
                       onClick={createHandler}
                       color="primary"
@@ -186,52 +219,80 @@ function AdminProdcuts() {
                 ) : error ? (
                   <Typography className={classes.error}>{error}</Typography>
                 ) : (
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>ID</TableCell>
-                          <TableCell>NAME</TableCell>
-                          <TableCell>PRICE</TableCell>
-                          <TableCell>CATEGORY</TableCell>
-                          <TableCell>COUNT</TableCell>
-                          <TableCell>RATING</TableCell>
-                          <TableCell>ACTIONS</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {products.map((product) => (
-                          <TableRow key={product._id}>
-                            <TableCell>
-                              {product._id.substring(20, 24)}
-                            </TableCell>
-                            <TableCell>{product.name}</TableCell>
-                            <TableCell>${product.price}</TableCell>
-                            <TableCell>{product.category}</TableCell>
-                            <TableCell>{product.countInStock}</TableCell>
-                            <TableCell>{product.rating}</TableCell>
-                            <TableCell>
-                              <NextLink
-                                href={`/admin/product/${product._id}`}
-                                passHref
-                              >
-                                <Button size="small" variant="contained">
-                                  Edit
-                                </Button>
-                              </NextLink>{' '}
-                              <Button
-                                onClick={() => deleteHandler(product._id)}
-                                size="small"
-                                variant="contained"
-                              >
-                                Delete
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <Grid container spacing={1}>
+                    {products.map((product) => (
+                      <Card key={product._id} item xs={6} md={2}>
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            image={product.image}
+                            title={product.name}
+                          ></CardMedia>
+                          <CardContent
+                            style={{ justifyContent: 'space-between' }}
+                          >
+                            <Typography>
+                              Product Name: {product.name}
+                            </Typography>
+                            <Typography>
+                              Category: {product.category}
+                            </Typography>
+                            <Typography>
+                              Purchase Price: {product.purchasePrice}
+                            </Typography>
+                            <Typography>Cost: {product.cost}</Typography>
+                            <Typography>
+                              Selling Price: {product.price}
+                            </Typography>
+                            <Typography>Breed: {product.breed}</Typography>
+                            <Typography>Weight: {product.weight}</Typography>
+
+                            <Typography>
+                              Customer Name: {product.customerName}
+                            </Typography>
+                            <Typography>
+                              Customer Phone: {product.customerPhone}
+                            </Typography>
+                            <Typography>
+                              Customer Address: {product.customerAddress}
+                            </Typography>
+                            <Typography>
+                              Seller Name: {product.sellerName}
+                            </Typography>
+                            <Typography>
+                              Seller Address: {product.sellerAddress}
+                            </Typography>
+                            <Typography>
+                              Purchase Date: {product.purchaseDate}
+                            </Typography>
+                            <Typography>
+                              Sell Date: {product.sellDate}
+                            </Typography>
+                            {/* <Rating value={product.rating} readOnly></Rating> */}
+                          </CardContent>
+                        </CardActionArea>
+                        <CardActions
+                          style={{ justifyContent: 'space-between' }}
+                        >
+                          <NextLink
+                            href={`/admin/product/${product._id}`}
+                            passHref
+                          >
+                            <Button size="small" variant="contained">
+                              Edit
+                            </Button>
+                          </NextLink>{' '}
+                          <Button
+                            onClick={() => deleteHandler(product._id)}
+                            size="small"
+                            variant="contained"
+                          >
+                            Delete
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    ))}
+                  </Grid>
                 )}
               </ListItem>
             </List>

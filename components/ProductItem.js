@@ -27,7 +27,7 @@ export default function ProductItem({ product, addToCartHandler }) {
           </CardContent>
         </CardActionArea>
       </NextLink>
-      <CardActions>
+      <CardActions style={{ justifyContent: 'space-between' }}>
         <Typography>${product.price}</Typography>
         <Button
           size="small"

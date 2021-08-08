@@ -19,6 +19,8 @@ handler.put(async (req, res) => {
   if (product) {
     product.name = req.body.name;
     product.slug = req.body.slug;
+    product.purchasePrice = req.body.purchasePrice;
+    product.cost = req.body.cost;
     product.price = req.body.price;
     product.category = req.body.category;
     product.image = req.body.image;
@@ -27,6 +29,16 @@ handler.put(async (req, res) => {
     product.brand = req.body.brand;
     product.countInStock = req.body.countInStock;
     product.description = req.body.description;
+    product.breed = req.body.breed;
+    product.weight = req.body.weight;
+    product.customerName = req.body.customerName;
+    product.customerPhone = req.body.customerPhone;
+    product.customerAddress = req.body.customerAddress;
+    product.sellerName = req.body.sellerName;
+    product.sellerAddress = req.body.sellerAddress;
+    product.purchaseDate = req.body.purchaseDate;
+    product.sellDate = req.body.sellDate;
+
     await product.save();
     await db.disconnect();
     res.send({ message: 'Product Updated Successfully' });
